@@ -1,6 +1,7 @@
 
 // Initialize global variables
 var phoneBrowsing = false;
+var tipVisible = false;
 
 
 // Determine if the user is browsing on mobile and adjust worldMapWidth if they are
@@ -22,6 +23,18 @@ function step() {
 
 function updateCharts() {
 
+}
+
+function initTooltip() {
+    var tip = d3.tip().attr('class', 'd3-tip')
+        .html(function(d) {
+            var text = "<span style='color:white'><strong>Organization</strong>: " + d.Organization + "</span></br></br>";
+            text += "<span style='color:white'><strong>Address</strong>: " + d.Address + "</span></br>";
+            text += "<span style='color:white'><strong>Notes</strong>: " + d.Notes + "</span></br>";
+            // text += "<span style='color:white'><strong>Address</strong>: " + d.Address + "</span></br>";
+            return text;
+    })
+    g.call(tip);
 }
 
 
@@ -59,11 +72,29 @@ Promise.all(promises).then(function(allData) {
         .append('g')
             .attr('class', 'map');
 
-    // usProjection
-            // .translate([(vis.width / 2) + 10, (vis.height / 2) -50])
+    var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .html(function(d) {
+            var text = "<span style='color:white'><strong>Organization</strong>: " + d.Organization + "</span></br></br>";
+            text += "<span style='color:white'><strong>Address</strong>: " + d.Address + "</span></br>";
+            text += "<span style='color:white'><strong>Looking For</strong>: " + d["Looking for"] + "</span></br></br>";
+
+            text += "<span style='color:white'><strong>Email</strong>: " + d.Email + "</span></br>";
+            text += "<span style='color:white'><strong>Donation Link</strong>: " + d["Donation Link"] + "</span></br>";
+            // text += "<span style='color:white'><strong>Address</strong>: " + d.Address + "</span></br>";
+            return text;
+    })
+    g.call(tip);
+
+    // g.on("click tap", function() {
+    //     if (tipVisible == true) {
+    //         tip.hide();
+    //         tipVisible = false;
+    //     }
+    // })
+
     var path = d3.geoPath()
         .projection(projection)
-        // .parallels([33, 45]);
 
     var mapPath = g.append("g")
         .attr("class", "city-map")
@@ -135,6 +166,14 @@ Promise.all(promises).then(function(allData) {
             .attr("r", 4)
             .attr("opacity", 0.8)
             .style("fill", "red")
+            .on('click tap',function(d){
+                tip.show(d);
+                tipVisible = true;
+            })
+            // .on('mouseout', function(d){
+            //     tip.hide(d);
+            // })
+
 
 
 
@@ -142,6 +181,8 @@ Promise.all(promises).then(function(allData) {
         .scaleExtent([1, 15])
         .on('zoom', function() {
             svg.selectAll('path')
+                .attr('transform', d3.event.transform);
+            svg.selectAll('.d3-tip')
                 .attr('transform', d3.event.transform);
             svg.selectAll('circle')
                 .attr('transform', d3.event.transform)
@@ -156,6 +197,7 @@ Promise.all(promises).then(function(allData) {
         });
 
     svg.call(zoom);
+
 
 
 });
