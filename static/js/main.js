@@ -64,6 +64,7 @@ Promise.all(promises).then(function(allData) {
         .append("svg")
 
     svg
+        .attr("transform", "translate(50, 100)")
         .attr("width", width)
         .attr("height", height)
         .attr("preserveAspectRatio", "xMinYMin meet")
@@ -76,12 +77,13 @@ Promise.all(promises).then(function(allData) {
         .attr('class', 'd3-tip')
         .html(function(d) {
             var text = "<span style='color:white'><strong>Organization</strong>: " + d.Organization + "</span></br></br>";
+            text += "<span style='color:white'><strong>Neighborhood</strong>: " + d.Neighborhood + "</span></br>";
             text += "<span style='color:white'><strong>Address</strong>: " + d.Address + "</span></br>";
             text += "<span style='color:white'><strong>Looking For</strong>: " + d["Looking for"] + "</span></br></br>";
 
             text += "<span style='color:white'><strong>Email</strong>: " + d.Email + "</span></br>";
             text += "<span style='color:white'><strong>Donation Link</strong>: " + d["Donation Link"] + "</span></br>";
-            // text += "<span style='color:white'><strong>Address</strong>: " + d.Address + "</span></br>";
+
             return text;
     })
     g.call(tip);
