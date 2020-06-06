@@ -13,18 +13,12 @@ if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
 // Neighborhood
 // Address
 
-// Dropoff Start
-// Dropoff End
-// Pickup Start
-// Pickup End
-// Open Weekdays
-// Location Start Date
-// Location End Date
+
 // Donation Items
 // Urgent Need
 // Not Accepting
 // Notes
-// Looking for
+// Looking For
 // Email
 // Donation Link
 // Venmo
@@ -33,14 +27,40 @@ if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
 // Instagram
 // Website
 // Phone Number
+
+
+
+// (Unused so far in popup, use for coloring/add corresponding text once you have a sample submission)
+// Dropoff Start
+// Dropoff End
+// Pickup Start
+// Pickup End
+// Open Weekdays
+// Location Start Date
+// Location End Date
 // Direct Info?
 
 function generatePopUpText(d) {
     var popupText = '<div class="marker-text">';
-    popupText += "<span style='color:black'><strong>" + d.Organization + "</strong></span></br></br>";
+    popupText += "<span style='color:black'><strong><h5>" + d.Organization + "</h5></strong></span>";
     popupText += "<span style='color:black'><strong>Neighborhood</strong>: " + d.Neighborhood + "</span></br>";
     popupText += "<span style='color:black'><strong>Address</strong>: <a href='" + addressLink + "' target='_blank'>" + d.Address + "</a></span></br>";
     // text += "<span style='color:black'><strong>Looking For</strong>: " + d["Looking for"] + "</span></br></br>";
+
+    popupText += "<hr>"
+
+    var donationFieldsPresent = false;
+    var donationFields = ['Donation Items', 'Urgent Need', 'Not Accepting'];
+    donationFields.forEach(function(field, i) {
+        if(d[field]) {
+            donationFieldsPresent = true;
+            popupText += "<span style='color:black'><strong>" + field + "</strong>: " + d[field] + "</span></br>";
+        }
+    })
+
+    if (donationFieldsPresent) {
+        popupText += '<hr>';
+    }
 
     var optionalFields = ['Email', 'Venmo', 'CashApp', 'Paypal', 'Instagram', 'Phone Number'];
     optionalFields.forEach(function(field) {
@@ -53,10 +73,14 @@ function generatePopUpText(d) {
     var optionalLinkedFields = ['Website', 'Donation Link'];
     optionalLinkedFields.forEach(function(field) {
         if (d[field]) {
-            popupText += "</br><span style='color:black'><strong><a href='" + d[field] + ">'>" + field + "</a></strong>" + "</span>";
+            popupText += "</br><span style='color:black'><strong><a href='" + d[field] + "' target='_blank'>" + field + "</a></strong>" + "</span>";
         }
     })
     // popupText += "<span style='color:black'><strong><a href='" + d["Donation Link"] + ">'>Donation Link</a></strong>" + "</span></br>";
+    if (d.Notes) {
+        text += '<hr><span><strong>Notes</strong>: ' + d.Notes + '</span>';
+    }
+
     popupText += '</div>';
 
     return popupText
