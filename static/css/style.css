@@ -9,3 +9,26 @@ body {
 .spacer {
 	height: 50px;
 }
+
+.d3-tip {
+	background-color: white;
+	border-radius: 8px;
+	border: 1px solid black;
+	opacity: 0.85 !important;
+	max-width: 350px;
+}
+
+#list-area {
+	max-height: 750px;
+	overflow-y: auto;
+}
+
+.listing-textbox {
+	border: 1px solid black;
+	background-color: green;
+}
+
+.close-button:hover {
+	background-color: rgb(239, 239, 239);
+	cursor: pointer;
+}

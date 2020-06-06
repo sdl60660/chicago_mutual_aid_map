@@ -27,18 +27,6 @@ function updateCharts() {
 
 }
 
-function initTooltip() {
-    var tip = d3.tip().attr('class', 'd3-tip')
-        .html(function(d) {
-            var text = "<span style='color:white'><strong>Organization</strong>: " + d.Organization + "</span></br></br>";
-            text += "<span style='color:white'><strong>Address</strong>: " + d.Address + "</span></br>";
-            text += "<span style='color:white'><strong>Notes</strong>: " + d.Notes + "</span></br>";
-            // text += "<span style='color:white'><strong>Address</strong>: " + d.Address + "</span></br>";
-            return text;
-    })
-    g.call(tip);
-}
-
 
 var promises = [
     d3.json("static/data/chicago.geojson"),
@@ -77,37 +65,21 @@ Promise.all(promises).then(function(allData) {
         .fitSize([width, height], neighborhoodGeoJSON )
 
 
-    // svg
-    //     .attr("transform", "translate(50, 100)")
-    //     .attr("width", width)
-    //     .attr("height", height)
-    //     .attr("preserveAspectRatio", "xMinYMin meet")
-
-    // var g = svg
-    //     .append('g')
-    //         .attr('class', 'map');
-
     var tip = d3.tip()
         .attr('class', 'd3-tip')
         .html(function(d) {
-            var text = "<span style='color:white'><strong>Organization</strong>: " + d.Organization + "</span></br></br>";
-            text += "<span style='color:white'><strong>Neighborhood</strong>: " + d.Neighborhood + "</span></br>";
-            text += "<span style='color:white'><strong>Address</strong>: " + d.Address + "</span></br>";
-            text += "<span style='color:white'><strong>Looking For</strong>: " + d["Looking for"] + "</span></br></br>";
+            var text = '<div style="float:right; color:black; text-align:right; margin-top: -6px;margin-left: 6px;"><span class="close-button" style="font-size:20px">×</span></div>';
+            text += "<span style='color:black'><strong>Organization</strong>: " + d.Organization + "</span></br></br>";
+            text += "<span style='color:black'><strong>Neighborhood</strong>: " + d.Neighborhood + "</span></br>";
+            text += "<span style='color:black'><strong>Address</strong>: " + d.Address + "</span></br>";
+            // text += "<span style='color:black'><strong>Looking For</strong>: " + d["Looking for"] + "</span></br></br>";
 
-            text += "<span style='color:white'><strong>Email</strong>: " + d.Email + "</span></br>";
-            text += "<span style='color:white'><strong><a href='" + d["Donation Link"] + ">'>Donation Link</a></strong>" + "</span></br>";
+            text += "<span style='color:black'><strong>Email</strong>: " + d.Email + "</span></br>";
+            text += "<span style='color:black'><strong><a href='" + d["Donation Link"] + ">'>Donation Link</a></strong>" + "</span></br>";
 
             return text;
     })
     g.call(tip);
-
-    // g.on("click tap", function() {
-    //     if (tipVisible == true) {
-    //         tip.hide();
-    //         tipVisible = false;
-    //     }
-    // })
 
     var path = d3.geoPath()
         .projection(projection)
@@ -141,17 +113,19 @@ Promise.all(promises).then(function(allData) {
             .attr("cy", function(d) {
                 return projection([d.Longitude, d.Latitude])[1]
             })
-            .attr("r", 3.5)
+            .attr("r", 4)
             .attr("opacity", 0.8)
-            .style("fill", "red")
+            .style("fill", "green")
             .attr("stroke-width", 0.5)
             .attr("stroke", "black")
             .on('click tap',function(d, i, n){
                 // var target = d3.select(n[i]);
                 tooltipFeature = d;
                 tooltipTarget = n[i];
+
                 tip.hide();
-                tip.show(d, tooltipTarget);
+                tip.show(tooltipFeature, tooltipTarget);
+
                 tipVisible = true;
             })
 
@@ -161,7 +135,9 @@ Promise.all(promises).then(function(allData) {
         .translateExtent([[-100, -100], [width+100, height+100]])
         .on('zoom', function() {
             // tip.hide();
-            tip.show(tooltipFeature, tooltipTarget);
+            if (tipVisible == true) {
+                tip.show(tooltipFeature, tooltipTarget);
+            }
 
             svg.selectAll('path')
                 .attr('transform', d3.event.transform);
@@ -170,16 +146,55 @@ Promise.all(promises).then(function(allData) {
             svg.selectAll('circle')
                 .attr('transform', d3.event.transform)
                 .attr('r', function() {
-                    if (d3.event.transform.k > 6) {
-                        return 2
-                    }
-                    else {
-                        return 3.5;
-                    }
-                });
+                    return 4 / d3.event.transform.k;
+                })
+                .attr("stroke-width", function() {
+                    return 0.5 / d3.event.transform.k;
+                })
         });
 
     svg.call(zoom);
+
+    // $(".close-button")
+    //     .on("click", function() {
+    //         console.log('here');
+    //         tip.hide();
+    //     })
+
+    $('body').on('click', '.close-button', function() {
+        console.log('here');
+        tip.hide();
+        // $(".d3-tip").show();
+    });
+
+
+    // $("#list-area").append("")
+
+    var textsvg = d3.select("#list-area")
+        .append("svg")
+        .attr("id", "org-list")
+        .attr("width", 400)
+        .attr("height", 750)
+
+    var textBoxes = textsvg.selectAll("div")
+        .data(organzations, function(d) {
+            return d.Address;
+        })
+
+    textBoxes
+        .enter()
+        .append("div")
+            .attr("class", "listing-textbox")
+            .attr("width", 400)
+            .attr("height", 250)
+            .attr("x", 0)
+            .attr("y", function(d,i) {
+                return 250*i;
+            })
+            .append("text")
+                .text(function(d) {
+                    return d.Organization;
+                })
 
 
 
