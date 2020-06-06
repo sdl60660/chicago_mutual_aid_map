@@ -6,6 +6,10 @@ body {
 	font-family: "Helvetica Neue",helvetica,arial,sans-serif;
 }
 
+h5 {
+	font-size: 16px;
+}
+
 .spacer {
 	height: 50px;
 }
@@ -18,8 +22,21 @@ body {
 	max-width: 350px;
 }
 
-#list-area {
+/*#list-area {
 	max-height: 750px;
+	overflow-y: auto;
+}*/
+
+#map-area {
+	height: 750px;
+	width: 550px;
+	margin-top: 40px;
+}
+
+#location-list {
+	margin-top: 40px;
+	max-height: 750px;
+	width: 100%;
 	overflow-y: auto;
 }
 
@@ -32,3 +49,24 @@ body {
 	background-color: rgb(239, 239, 239);
 	cursor: pointer;
 }
+
+.marker-text {
+	overflow-y: auto;
+	max-height: 200px;
+}
+
+.leaflet-popup-content {
+	max-width: 300px;
+}
+
+.site-listing {
+	/*height: 200px;*/
+	width: 100%;
+	/*border: 1px solid black;*/
+	border-radius: 8px;
+	padding: 10px;
+	margin-bottom: 8px;
+	background-color: rgba(220,220,220, 0.4);
+}
+
+
