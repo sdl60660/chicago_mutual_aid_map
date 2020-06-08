@@ -1,3 +1,9 @@
+// 4. Adjust dynamic sizing for height of map/listings
+// 5. Change coloring for unknowns?
+// 6. Mobile?
+// 7. Add contact/form info somewhere on map and very short description?
+
+
 
 // Initialize global variables
 var phoneBrowsing = false;
@@ -5,26 +11,26 @@ var phoneBrowsing = false;
 var organzations;
 var markers;
 
+var hiddenGroups = [];
+
 var addressLink;
 var orderedWeekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 var markerColoringDict = {
-    'Open for Dropoff/Pickup': 'rgb(50,205,50)',
-    'Open only for Dropoff': "rgb(44,123,182)",
-    'Open only for Pickup': "rgb(171,217,233)",
-    'Currently Closed': "rgb(215,25,28)",
-    'Status Unknown': "rgb(110,110,110)"
+    'Open for Dropoff/Pickup': 'rgba(50,205,50,0.8)',
+    'Open only for Dropoff': "rgba(44,123,182,0.8)",
+    'Open only for Pickup': "rgba(171,217,233,0.8)",
+    'Currently Closed': "rgba(215,25,28,0.8)",
+    'Status Unknown': "rgba(140,140,140,0.8)"
 }
 
 var listingColoringDict = {
-    'Open for Dropoff/Pickup': 'rgba(50,205,50,0.4)',
-    'Open only for Dropoff': "rgba(44,123,182,0.4)",
-    'Open only for Pickup': "rgba(171,217,233,0.4)",
-    'Currently Closed': "rgba(215,25,28,0.4)",
-    'Status Unknown': "rgba(110,110,110,0.4)"
+    'Open for Dropoff/Pickup': 'rgba(50,205,50,0.5)',
+    'Open only for Dropoff': "rgba(44,123,182,0.5)",
+    'Open only for Pickup': "rgba(171,217,233,0.5)",
+    'Currently Closed': "rgba(215,25,28,0.5)",
+    'Status Unknown': "rgba(110,110,110,0.5)"
 }
-
-
 
 // Determine if the user is browsing on mobile and adjust worldMapWidth if they are
 if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
@@ -101,7 +107,7 @@ function formatHours(weekdayString, startTime, endTime) {
     var formattedStart = startTime.slice(0, 3 + startTime.indexOf(':')) + ' ' + startTime.slice(startTime.length - 2);
     var formattedEnd = endTime.slice(0, 3 + endTime.indexOf(':')) + ' ' + endTime.slice(endTime.length - 2);
 
-    return formattedWeekdays + ': ' + formattedStart + ' to ' + formattedEnd;
+    return formattedWeekdays + ' ' + formattedStart + ' to ' + formattedEnd;
 } 
 
 
@@ -241,23 +247,42 @@ function updateOrgs() {
 
         var consolidatedStatus;
         if (dropoffStatus == 'Open' && pickupStatus == 'Open') {
-            consolidatedStatus = 'Open for Dropoff/Pickup';
+            d['consolidatedStatus'] = 'Open for Dropoff/Pickup';
         }
         else if (dropoffStatus == 'Open') {
-            consolidatedStatus = 'Open only for Dropoff';
+            d['consolidatedStatus'] = 'Open only for Dropoff';
         }
         else if (pickupStatus == 'Open') {
-            consolidatedStatus = 'Open only for Pickup';
+            d['consolidatedStatus'] = 'Open only for Pickup';
         }
         else if (dropoffStatus == 'Closed' || pickupStatus == 'Closed') {
-            consolidatedStatus = 'Currently Closed';
+            d['consolidatedStatus'] = 'Currently Closed';
         }
         else {
-            consolidatedStatus = 'Status Unknown';
+            d['consolidatedStatus'] = 'Status Unknown';
         }
+    })
+
+    // Filter out any sites that are deselected by open status from legend
+    displayData = displayData.filter(function(d) {
+        return (hiddenGroups.includes(d.consolidatedStatus) == false);
+    });
+
+    // Filter out any popup sites that are passed their end date
+    displayData = displayData.filter(function(d) {
+        if (d['Location End Date'] && d['Location End Date'] < new Date()) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    })
+
+    // Generate markers and listings for each site
+    displayData.forEach(function(d,i) {
 
         // Create and save a reference to each marker
-        var marker = L.circleMarker([d.Latitude, d.Longitude], {'color': markerColoringDict[consolidatedStatus], 'radius': 5, 'weight': 1, 'fillOpacity': 0.7, myCustomId: i}).addTo(markers);
+        var marker = L.circleMarker([d.Latitude, d.Longitude], {'color': markerColoringDict[d.consolidatedStatus], 'radius': 6, 'weight': 1, 'fillOpacity': 0.7, myCustomId: i}).addTo(markers);
         markers.addLayer(marker);
 
         addressLink = "https://maps.google.com?saddr=Current+Location&daddr=" + encodeURI(d.Address);
@@ -267,7 +292,7 @@ function updateOrgs() {
         popupText += '</div>';
         marker.bindPopup(popupText);
 
-        var listingText = '<div class="site-listing" style="background-color:' + listingColoringDict[consolidatedStatus] + ';" markerId="' + i + '"">'
+        var listingText = '<div class="site-listing" status="' + d.consolidatedStatus + '" style="background-color:' + listingColoringDict[d.consolidatedStatus] + ';" markerId="' + i + '"">'
         // background-color: rgba(220,220,220, 0.4);
 
         listingText += generatePopUpText(d);
@@ -283,8 +308,13 @@ function updateOrgs() {
                 return d.options.myCustomId == markerId;
             });
             matchingMarker.fire('click');
-
-    })
+        })
+        .mouseover(function() {
+            $(this).css("background-color", markerColoringDict[$(this).attr("status")]);
+        })
+        .mouseout(function() {
+            $(this).css("background-color", listingColoringDict[$(this).attr("status")]);
+        })
 
 }
 
@@ -319,6 +349,17 @@ Promise.all(promises).then(function(allData) {
 
     L.geoJSON(neighborhoodGeoJSON, {weight: 1}).addTo(mymap);
 
+    legend = L.control({position: 'topright'});
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend');
+
+        for (let [key, value] of Object.entries(markerColoringDict)) {
+            div.innerHTML += '<div class="legend-item" style="background-color: ' + value + '"><span>' + key + '</span></div></br>'
+        }
+
+        return div;
+    };
+    legend.addTo(mymap);
 
     // setup a marker group
     markers = L.layerGroup().addTo(mymap);
@@ -326,6 +367,29 @@ Promise.all(promises).then(function(allData) {
     // Initialize markers/listings
     updateOrgs();
 
+    $(".legend-item")
+        .on("click tap", function() {
+            if (hiddenGroups.includes($(this).text())) {
+                var itemVal = $(this).text();
+
+                hiddenGroups = hiddenGroups.filter(function(d) {
+                    return d != itemVal;
+                })
+
+                $(this)
+                    .css("background-color", markerColoringDict[itemVal])
+                    .css("text-decoration", "none")
+            }
+            else {
+                $(this)
+                    .css("background-color", 'rgba(0,0,0,0)')
+                    .css("text-decoration", "line-through")
+
+                hiddenGroups.push($(this).text())
+            }
+
+            updateOrgs();
+        });
 
 });
 
