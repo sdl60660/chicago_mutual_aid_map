@@ -1,13 +1,5 @@
-// 4. Adjust dynamic sizing for height of map/listings
-// 5. Change coloring for unknowns?
-// 6. Mobile?
-// 7. Add contact/form info somewhere on map and very short description?
-
-
 
 // Initialize global variables
-var phoneBrowsing = false;
-
 var organzations;
 var markers;
 
@@ -32,11 +24,6 @@ var listingColoringDict = {
     'Status Unknown': "rgba(110,110,110,0.5)"
 }
 
-// Determine if the user is browsing on mobile and adjust worldMapWidth if they are
-if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-    phoneBrowsing = true;
-}
-
 
 function processFieldGroup(d, fieldNames) {
     var returnText = '';
@@ -55,6 +42,7 @@ function processFieldGroup(d, fieldNames) {
 
     return returnText;
 }
+
 
 function timeStringtoNum(timeString) {
     var hourVal = parseInt(timeString.slice(0, timeString.indexOf(':')));
@@ -165,8 +153,8 @@ function generatePopUpText(d) {
     }
 
     return popupText
-
 }
+
 
 function determineOpenStatus(d, siteFunction) {
     var currentDateTime = new Date();
@@ -207,8 +195,8 @@ function determineOpenStatus(d, siteFunction) {
     else {
         return 'Closed'
     }
-
 }
+
 
 function updateOrgs() {
     var displayData = organzations;
@@ -315,8 +303,8 @@ function updateOrgs() {
         .mouseout(function() {
             $(this).css("background-color", listingColoringDict[$(this).attr("status")]);
         })
-
 }
+
 
 $("#search-val")
     .on("keyup", function() {
@@ -354,7 +342,7 @@ Promise.all(promises).then(function(allData) {
         var div = L.DomUtil.create('div', 'info legend');
 
         for (let [key, value] of Object.entries(markerColoringDict)) {
-            div.innerHTML += '<div class="legend-item" style="background-color: ' + value + '"><span>' + key + '</span></div></br>'
+            div.innerHTML += '<div class="legend-item" style="background-color: ' + value + '"><span><strong>' + key + '</strong></span></div></br>'
         }
 
         return div;
