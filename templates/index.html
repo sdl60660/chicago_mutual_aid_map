@@ -29,15 +29,27 @@
     <!-- Bootstrap grid setup -->
     <div class="container">
         <div class="row">
-            <div id="search-wrapper">
+            <div class="col-md-4" style="height: 100%; text-align: center;">
+                <!-- <img src="static/images/flag_top.png" style="width:65%;"> -->
+                <h2 style="height:100%">Chicago Aid Map</h2>
+                <!-- <img src="static/images/flag_bottom.png" style="width:65%;"> -->
+            </div>
+            <div class="col-md-4" id="search-wrapper">
                 <form id="org-search">
                     <span>Search by group/organization name or by neighborhood:</span>
                     <br>
                     <input type="text" id="search-val">
                 </form>
             </div>
+            <div class="col-md-4">
+                <div id="directory-button-group">
+                    <a href="https://forms.gle/SdpqhpGD82uxWL2C8" target="_blank"><button class="directory-button">Add your group to this map/directory</button></a></br>
+                    <a href="mailto:chicagoaidmap@gmail.com" target="_blank"><button class="directory-button">Email Feedback/Questions/Concerns</button></a></br>
+                    <a href="https://docs.google.com/spreadsheets/d/1nhrhPdAQepdFhqNGrJ-dGfUqdSguJJPylbzQVBsG8bI/edit?usp=sharing" target="_blank"><button class="directory-button">See The Data</button></a>
+                </div>
+            </div>
         </div>
-        <div class="row">
+        <div class="row" id="content-row">
             <div class="col-md-7 col-lg-7">
                  <div id="map-area"></div>
             </div>

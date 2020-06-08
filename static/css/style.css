@@ -18,12 +18,13 @@ hr {
 	height: 50px;
 }
 
-.d3-tip {
-	background-color: white;
-	border-radius: 8px;
-	border: 1px solid black;
-	opacity: 0.85 !important;
-	max-width: 350px;
+#directory-button-group {
+	margin-top: 20px;
+	text-align: right;
+}
+
+.directory-button {
+	margin-bottom: 5px;
 }
 
 #search-wrapper {
@@ -35,14 +36,14 @@ hr {
 }
 
 #map-area {
-	height: 750px;
+	height: 650px;
 	width: 100%;
 	margin-top: 40px;
 }
 
 #location-list {
 	margin-top: 40px;
-	max-height: 750px;
+	max-height: 650px;
 	width: 100%;
 	overflow-y: auto;
 }
@@ -58,6 +59,7 @@ hr {
 
 .container {
 	width: 90%;
+	height: 80%;
 }
 
 .close-button:hover {
