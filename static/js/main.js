@@ -13,7 +13,7 @@ var markerColoringDict = {
     'Open only for Dropoff': "rgba(44,123,182,0.8)",
     'Open only for Pickup': "rgba(171,217,233,0.8)",
     'Currently Closed': "rgba(215,25,28,0.8)",
-    'Status Unknown': "rgba(140,140,140,0.8)"
+    'Hours Unknown': "rgba(140,140,140,0.8)"
 }
 
 var listingColoringDict = {
@@ -21,7 +21,7 @@ var listingColoringDict = {
     'Open only for Dropoff': "rgba(44,123,182,0.5)",
     'Open only for Pickup': "rgba(171,217,233,0.5)",
     'Currently Closed': "rgba(215,25,28,0.5)",
-    'Status Unknown': "rgba(110,110,110,0.5)"
+    'Hours Unknown': "rgba(110,110,110,0.4)"
 }
 
 
@@ -247,7 +247,7 @@ function updateOrgs() {
             d['consolidatedStatus'] = 'Currently Closed';
         }
         else {
-            d['consolidatedStatus'] = 'Status Unknown';
+            d['consolidatedStatus'] = 'Hours Unknown';
         }
     })
 
@@ -335,7 +335,7 @@ Promise.all(promises).then(function(allData) {
         accessToken: 'pk.eyJ1Ijoic2FtbGVhcm5lciIsImEiOiJja2IzNTFsZXMwaG44MzRsbWplbGNtNHo0In0.BmjC6OX6egwKdm0fAmN_Nw'
     }).addTo(mymap);
 
-    L.geoJSON(neighborhoodGeoJSON, {weight: 1}).addTo(mymap);
+    L.geoJSON(neighborhoodGeoJSON, {weight: 1, fillOpacity: 0.12}).addTo(mymap);
 
     legend = L.control({position: 'topright'});
     legend.onAdd = function (map) {
