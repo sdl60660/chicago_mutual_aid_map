@@ -118,6 +118,11 @@ function generatePopUpText(d) {
     if (d['Dropoff Weekdays'] && d['Dropoff Start'] && d['Dropoff End']) {
         popupText += formatHours(d['Dropoff Weekdays'], d['Dropoff Start'], d['Dropoff End']);
     }
+    else if (d['Location Start Date'] && d['Location End Date']) {
+        popupText += d['Location Start Date'].slice(0, d['Location Start Date'].length - 5) + '-' + d['Location End Date'].slice(0, d['Location End Date'].length - 5) + ': ';
+        popupText += d['Dropoff Start'].slice(0, 3 + d['Dropoff Start'].indexOf(':')) + ' ' + d['Dropoff Start'].slice(d['Dropoff Start'].length - 2) + ' to ';
+        popupText += d['Dropoff End'].slice(0, 3 + d['Dropoff End'].indexOf(':')) + ' ' + d['Dropoff End'].slice(d['Dropoff End'].length - 2);
+    }
     else {
         popupText += 'N/A';
     }
@@ -126,6 +131,11 @@ function generatePopUpText(d) {
     popupText += '<span style="color:black"><strong>Pickup Hours</strong>: ';
     if (d['Pickup Weekdays'] && d['Pickup Start'] && d['Pickup End']) {
         popupText += formatHours(d['Pickup Weekdays'], d['Pickup Start'], d['Pickup End']);
+    }
+    else if (d['Location Start Date'] && d['Location End Date']) {
+        popupText += d['Location Start Date'].slice(0, d['Location Start Date'].length - 5) + '-' + d['Location End Date'].slice(0, d['Location End Date'].length - 5) + ': ';
+        popupText += d['Pickup Start'].slice(0, 3 + d['Pickup Start'].indexOf(':')) + ' ' + d['Pickup Start'].slice(d['Pickup Start'].length - 2) + ' to ';
+        popupText += d['Pickup End'].slice(0, 3 + d['Pickup End'].indexOf(':')) + ' ' + d['Pickup End'].slice(d['Pickup End'].length - 2);
     }
     else {
         popupText += 'N/A';
