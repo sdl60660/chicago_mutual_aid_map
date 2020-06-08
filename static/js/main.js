@@ -159,7 +159,7 @@ function generatePopUpText(d) {
 
     // Notes
     if (d.Notes) {
-        text += '<hr><span><strong>Notes</strong>: ' + d.Notes + '</span>';
+        popupText += '<hr><span><strong>Notes</strong>: ' + d.Notes + '</span>';
     }
 
     return popupText
