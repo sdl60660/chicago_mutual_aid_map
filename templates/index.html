@@ -29,6 +29,15 @@
     <!-- Bootstrap grid setup -->
     <div class="container">
         <div class="row">
+            <div id="search-wrapper">
+                <form id="org-search">
+                    <span>Search by group/organization name or by neighborhood:</span>
+                    <br>
+                    <input type="text" id="search-val">
+                </form>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-7 col-lg-7">
                  <div id="map-area"></div>
             </div>
@@ -51,6 +60,8 @@
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
    crossorigin=""></script>
+ <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js"></script>
+
 
 
 <!-- Custom JS -->
