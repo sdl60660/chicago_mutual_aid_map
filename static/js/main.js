@@ -282,7 +282,7 @@ function updateOrgs() {
     displayData.forEach(function(d,i) {
 
         // Create and save a reference to each marker
-        var marker = L.circleMarker([d.Latitude, d.Longitude], {'color': markerColoringDict[d.consolidatedStatus], 'radius': 6, 'weight': 1, 'fillOpacity': 0.7, myCustomId: i}).addTo(markers);
+        var marker = L.circleMarker([d.Latitude, d.Longitude], {'color': markerColoringDict[d.consolidatedStatus], 'radius': 7, 'weight': 1, 'fillOpacity': 0.7, myCustomId: i});
         markers.addLayer(marker);
 
         addressLink = "https://maps.google.com?saddr=Current+Location&daddr=" + encodeURI(d.Address);
