@@ -345,7 +345,7 @@ Promise.all(promises).then(function(allData) {
         accessToken: 'pk.eyJ1Ijoic2FtbGVhcm5lciIsImEiOiJja2IzNTFsZXMwaG44MzRsbWplbGNtNHo0In0.BmjC6OX6egwKdm0fAmN_Nw'
     }).addTo(mymap);
 
-    L.geoJSON(neighborhoodGeoJSON, {weight: 1, fillOpacity: 0.12}).addTo(mymap);
+    L.geoJSON(neighborhoodGeoJSON, {weight: 1, fillOpacity: 0.11}).addTo(mymap);
 
     legend = L.control({position: 'topright'});
     legend.onAdd = function (map) {
