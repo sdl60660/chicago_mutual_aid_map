@@ -11,7 +11,7 @@ var orderedWeekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', '
 var markerColoringDict = {
     'Open for Dropoff/Pickup': 'rgba(50,205,50,0.8)',
     'Open only for Dropoff': "rgba(44,123,182,0.8)",
-    'Open only for Pickup': "rgba(171,217,233,0.8)",
+    'Open only for Pickup': "rgba(171,217,233,0.9)",
     'Currently Closed': "rgba(215,25,28,0.8)",
     'Hours Unknown': "rgba(140,140,140,0.8)"
 }
