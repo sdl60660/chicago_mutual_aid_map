@@ -118,7 +118,7 @@ function generatePopUpText(d) {
     if (d['Dropoff Weekdays'] && d['Dropoff Start'] && d['Dropoff End']) {
         popupText += formatHours(d['Dropoff Weekdays'], d['Dropoff Start'], d['Dropoff End']);
     }
-    else if (d['Location Start Date'] && d['Location End Date']) {
+    else if (d['Location Start Date'] && d['Location End Date'] && d['Dropoff Start'] && d['Dropoff End']) {
         popupText += d['Location Start Date'].slice(0, d['Location Start Date'].length - 5) + '-' + d['Location End Date'].slice(0, d['Location End Date'].length - 5) + ': ';
         popupText += d['Dropoff Start'].slice(0, 3 + d['Dropoff Start'].indexOf(':')) + ' ' + d['Dropoff Start'].slice(d['Dropoff Start'].length - 2) + ' to ';
         popupText += d['Dropoff End'].slice(0, 3 + d['Dropoff End'].indexOf(':')) + ' ' + d['Dropoff End'].slice(d['Dropoff End'].length - 2);
@@ -132,7 +132,7 @@ function generatePopUpText(d) {
     if (d['Pickup Weekdays'] && d['Pickup Start'] && d['Pickup End']) {
         popupText += formatHours(d['Pickup Weekdays'], d['Pickup Start'], d['Pickup End']);
     }
-    else if (d['Location Start Date'] && d['Location End Date']) {
+    else if (d['Location Start Date'] && d['Location End Date'] && d['Pickup Start'] && d['Pickup End']) {
         popupText += d['Location Start Date'].slice(0, d['Location Start Date'].length - 5) + '-' + d['Location End Date'].slice(0, d['Location End Date'].length - 5) + ': ';
         popupText += d['Pickup Start'].slice(0, 3 + d['Pickup Start'].indexOf(':')) + ' ' + d['Pickup Start'].slice(d['Pickup Start'].length - 2) + ' to ';
         popupText += d['Pickup End'].slice(0, 3 + d['Pickup End'].indexOf(':')) + ' ' + d['Pickup End'].slice(d['Pickup End'].length - 2);
@@ -151,15 +151,17 @@ function generatePopUpText(d) {
 
     // Website Info
     var websiteFields = ['Website', 'Donation Link'];
-    websiteFields.forEach(function(field) {
-        if (d[field]) {
+    websiteFields = websiteFields.filter(function(field) { return d[field] != false });
+    if (websiteFields.length > 0) {
+        websiteFields.forEach(function(field) {
             popupText += "<span style='color:black'><strong><a href='" + d[field] + "' target='_blank'>" + field + "</a></strong>" + "</span></br>";
-        }
-    })
+        })
+        popupText += '<hr>';
+    }
 
     // Notes
     if (d.Notes) {
-        popupText += '<hr><span><strong>Notes</strong>: ' + d.Notes + '</span>';
+        popupText += '<span><strong>Notes</strong>: ' + d.Notes + '</span>';
     }
 
     return popupText
@@ -180,7 +182,12 @@ function determineOpenStatus(d, siteFunction) {
     // If this is a popup/temporary location, to be open we must be within the start/end dates
     if (d['Location Start Date'] && d['Location End Date']) {
         if (new Date(d['Location Start Date']) <= currentDateTime && new Date(d['Location End Date']) >= currentDateTime) {
-            dayWindow = true;
+            if (!d[(siteFunction + ' Weekdays')]) {
+                dayWindow = true;
+            }
+            else if (d[(siteFunction + ' Weekdays')].includes(currentWeekday)) {
+                dayWindow = true;
+            }  
         }
     }
     // Otherwise, the current weekday just needs to be part of the listed open weekdays
