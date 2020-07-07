@@ -1,6 +1,6 @@
 
 // Initialize global variables
-var organzations;
+var organizations;
 var markers;
 
 var hiddenGroups = [];
@@ -216,7 +216,7 @@ function determineOpenStatus(d, siteFunction) {
 
 
 function updateOrgs() {
-    var displayData = organzations;
+    var displayData = organizations;
 
     Object.keys(markers._layers).forEach( function(layer) {
         markers.removeLayer(layer);
@@ -229,7 +229,7 @@ function updateOrgs() {
         var searchTerm = $('#search-val').val().toLowerCase();
 
         // Filter to only groups whose names/neighborhoods contain the search term
-        displayData = organzations.filter(function(d) {
+        displayData = organizations.filter(function(d) {
             return ( d.Organization.toLowerCase().indexOf(searchTerm) !== -1 ||
                 d.Neighborhood.toLowerCase().indexOf(searchTerm) !== -1)               
         });
@@ -328,15 +328,19 @@ $("#search-val")
         updateOrgs();
     })
 
+window.googleDocCallback = function () { return true; };
 
 var promises = [
     d3.json("static/data/chicago.geojson"),
-    d3.csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQSk1wJPE-qGziV-lDBCF1r8BluATrW1NBcqJNWgTkfXpefmS7Na-mBvf4oZZ1YDye0YgNQW9JhL9C0/pub?gid=0&single=true&output=csv")
+    d3.csv("https://cors-anywhere.herokuapp.com/https://docs.google.com/spreadsheets/d/e/2PACX-1vQSk1wJPE-qGziV-lDBCF1r8BluATrW1NBcqJNWgTkfXpefmS7Na-mBvf4oZZ1YDye0YgNQW9JhL9C0/pub?gid=0&single=true&output=csv")
+    // fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQSk1wJPE-qGziV-lDBCF1r8BluATrW1NBcqJNWgTkfXpefmS7Na-mBvf4oZZ1YDye0YgNQW9JhL9C0/pub?gid=0&single=true&output=csv", { mode: 'no-cors'})
     ];
 
 Promise.all(promises).then(function(allData) {
     var neighborhoodGeoJSON = allData[0];
-    organzations = allData[1];
+    organizations = allData[1];
+
+    console.log(organizations);
 
     var mapCenter = d3.geoCentroid(allData[0]);
 
